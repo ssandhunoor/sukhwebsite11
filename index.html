@@ -34,6 +34,7 @@ nav{display:flex;gap:22px;font-weight:600;font-size:14px;text-transform:uppercas
 nav a{text-decoration:none;opacity:.8}nav a:hover{opacity:1;color:var(--accent)}
 .hero{background:var(--dark);color:var(--dark-text);overflow:hidden;position:relative}
 .hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:10px;min-height:520px}
+.hero .big{position:absolute;right:-2%;top:6%;font:800 clamp(72px,14vw,200px)/.8 "Barlow Condensed",sans-serif;text-transform:uppercase;color:transparent;-webkit-text-stroke:2px rgba(232,89,12,.28);pointer-events:none;user-select:none}
 .badge{display:inline-block;background:var(--accent);color:#fff;padding:5px 12px;font:600 13px Barlow,sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:18px}
 h1{font-size:clamp(44px,7.2vw,92px);font-weight:800;margin:0 0 18px}
 h1 em{font-style:normal;color:var(--accent)}
@@ -92,19 +93,6 @@ h2::after{content:"";display:block;width:64px;height:5px;background:var(--accent
 footer{padding:28px 0 96px;background:var(--dark);color:#a9a398;font-size:14px;border-top:3px solid var(--accent)}
 .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--accent);color:#fff;padding:13px 22px;text-decoration:none;font:800 18px "Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 6px 18px rgba(0,0,0,.35);z-index:9}
 @media(max-width:760px){nav{display:none}.hero .wrap{grid-template-columns:1fr;padding-top:34px;min-height:0}.hero img{max-width:420px}}
-.hero .wrap{padding-top:28px;padding-bottom:28px}
-.hero .vid{position:relative;justify-self:center;width:min(100%,290px);aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#000;border:3px solid var(--accent);box-shadow:0 30px 40px -12px rgba(0,0,0,.6)}
-.hero .vid video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
-.vid .pl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:68px;height:68px;border-radius:50%;border:0;background:var(--accent);color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;box-shadow:0 6px 20px rgba(0,0,0,.45)}
-.vid.paused .pl{display:flex}
-.vid .pl svg{width:34px;height:34px;fill:currentColor;margin-left:3px}
-.vid .pl:focus-visible{outline:2px solid #fff;outline-offset:3px}
-.vid.bad .pl,.vid.bad .snd{display:none}
-.vid .snd{position:absolute;right:10px;bottom:10px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(0,0,0,.62);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
-.vid .snd:hover{background:var(--accent)}
-.vid .snd:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.vid .snd svg{width:22px;height:22px;fill:currentColor}
-@media(max-width:760px){.hero .wrap{padding-top:34px;padding-bottom:34px}.hero .vid{width:min(100%,260px)}}
 .cm{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
 .cm.on{display:flex}
 .cm .bx{background:var(--surface);color:var(--text);border-top:4px solid var(--accent);max-width:360px;width:100%;padding:26px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.4)}
@@ -124,14 +112,14 @@ footer{padding:28px 0 96px;background:var(--dark);color:#a9a398;font-size:14px;b
 <header><div class="wrap"><a class="logo" href="#top"><img src="/logo.webp" alt="Sukh Implement logo" width="66" height="66">Sukh <span>Implement</span></a>
 <nav><a href="#products">Products</a><a href="#contact">Contact</a><a href="#branches">Branches</a></nav></div></header>
 
-<div class="hero" id="top"><div class="wrap">
+<div class="hero" id="top"><div class="big" aria-hidden="true">Welcome</div><div class="wrap">
 <div>
 <span class="badge">Authorised Dealer · Escorts Kubota Limited</span>
 <h1>Power for <em>Punjab’s</em> fields</h1>
 <p>Kubota tractors, rice transplanters and combine harvesters, with genuine sales and service in Jagraon and Moga.</p>
 <a class="btn" href="tel:+919876547172">Call Sales</a><a class="btn alt" href="#products">View Machines</a>
 </div>
-<div class="vid"><video id="hv" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-poster.jpg" width="720" height="1280" aria-label="Kubota MU5502 tractor walkaround at Sukh Implement"><source src="videos/hero.mp4" type="video/mp4"><source src="videos/hero.webm" type="video/webm"></video><button class="pl" id="pl" type="button" aria-label="Play video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button><button class="snd" id="snd" type="button" aria-label="Turn sound on" aria-pressed="false"></button></div>
+<img src="images/MU4502-4WD.webp" alt="Kubota MU4502 4WD tractor" width="560" height="560">
 </div></div>
 <div class="strip"><div class="wrap"><span>42–55 HP MU Series tractors</span><span>6-row rice transplanters</span><span>Harvesters up to 98.3 HP</span><span>Sales &amp; service</span></div></div>
 
@@ -231,29 +219,6 @@ document.getElementById("tabs").addEventListener("click",e=>{
  document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));
  grid.querySelectorAll(".card").forEach(c=>c.style.display=(b.dataset.f==="all"||c.dataset.t===b.dataset.f)?"":"none");
 });
-
-/* Hero video: muted autoplay, pauses when scrolled away, play button if the browser blocks autoplay, button for sound */
-(function(){
- const v=document.getElementById("hv"),b=document.getElementById("snd"),pl=document.getElementById("pl");if(!v||!b||!pl)return;
- const box=v.parentNode;
- const ON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm11 3a4.5 4.5 0 0 0-2.5-4v8A4.5 4.5 0 0 0 14 12zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>',
-  OFF='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.6 3 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>';
- const rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
- let manual=false;
- const play=()=>{const p=v.play();if(p&&p.catch)p.catch(()=>{})};
- const paint=()=>{b.innerHTML=v.muted?OFF:ON;b.setAttribute("aria-pressed",String(!v.muted));b.setAttribute("aria-label",v.muted?"Turn sound on":"Turn sound off")};
- const state=()=>box.classList.toggle("paused",v.paused);
- v.muted=true;paint();state();
- v.addEventListener("play",state);v.addEventListener("pause",state);v.addEventListener("playing",state);
- const fail=()=>box.classList.add("bad");
- v.addEventListener("error",fail);
- const srcs=v.querySelectorAll("source");if(srcs.length)srcs[srcs.length-1].addEventListener("error",fail);
- if(!rm)play();
- if("IntersectionObserver" in window&&!rm)new IntersectionObserver(es=>es.forEach(e=>{if(manual)return;if(e.isIntersecting)play();else v.pause()}),{threshold:.25}).observe(v);
- pl.addEventListener("click",()=>{manual=false;play()});
- v.addEventListener("click",()=>{if(v.paused){manual=false;play()}else{manual=true;v.pause()}});
- b.addEventListener("click",()=>{v.muted=!v.muted;if(!v.muted&&v.paused)play();paint()});
-})();
 
 /* On PC/laptop, show the number instead of opening a calling app. Phones/tablets keep normal tap-to-call. */
 (function(){
