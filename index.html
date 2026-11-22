@@ -93,6 +93,14 @@ h2::after{content:"";display:block;width:64px;height:5px;background:var(--accent
 footer{padding:28px 0 96px;background:var(--dark);color:#a9a398;font-size:14px;border-top:3px solid var(--accent)}
 .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--accent);color:#fff;padding:13px 22px;text-decoration:none;font:800 18px "Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 6px 18px rgba(0,0,0,.35);z-index:9}
 @media(max-width:760px){nav{display:none}.hero .wrap{grid-template-columns:1fr;padding-top:34px;min-height:0}.hero img{max-width:420px}}
+.hero .wrap{padding-top:28px;padding-bottom:28px}
+.hero .vid{position:relative;justify-self:center;width:min(100%,290px);aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#000;border:3px solid var(--accent);box-shadow:0 30px 40px -12px rgba(0,0,0,.6)}
+.hero .vid video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.vid .snd{position:absolute;right:10px;bottom:10px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(0,0,0,.62);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.vid .snd:hover{background:var(--accent)}
+.vid .snd:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.vid .snd svg{width:22px;height:22px;fill:currentColor}
+@media(max-width:760px){.hero .wrap{padding-top:34px;padding-bottom:34px}.hero .vid{width:min(100%,260px)}}
 .cm{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
 .cm.on{display:flex}
 .cm .bx{background:var(--surface);color:var(--text);border-top:4px solid var(--accent);max-width:360px;width:100%;padding:26px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.4)}
@@ -119,9 +127,9 @@ footer{padding:28px 0 96px;background:var(--dark);color:#a9a398;font-size:14px;b
 <p>Kubota tractors, rice transplanters and combine harvesters, with genuine sales and service in Jagraon and Moga.</p>
 <a class="btn" href="tel:+919876547172">Call Sales</a><a class="btn alt" href="#products">View Machines</a>
 </div>
-<img src="images/MU4502-4WD.webp" alt="Kubota MU4502 4WD tractor" width="560" height="560">
+<div class="vid"><video id="hv" muted loop playsinline preload="metadata" poster="images/hero-poster.jpg" width="720" height="1280" aria-label="Kubota MU5502 tractor walkaround at Sukh Implement"><source src="videos/hero.mp4" type="video/mp4"></video><button class="snd" id="snd" type="button" aria-label="Turn sound on" aria-pressed="false"></button></div>
 </div></div>
-<div class="strip"><div class="wrap"><span>21-55 HP TRACTORS LINEUP</span><span>6-row rice transplanters</span><span>Harvesters up to 98.3 HP</span><span>Sales &amp; service</span></div></div>
+<div class="strip"><div class="wrap"><span>42–55 HP MU Series tractors</span><span>6-row rice transplanters</span><span>Harvesters up to 98.3 HP</span><span>Sales &amp; service</span></div></div>
 
 <section id="products"><div class="wrap">
 <h2>Our Machines</h2>
@@ -219,6 +227,21 @@ document.getElementById("tabs").addEventListener("click",e=>{
  document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));
  grid.querySelectorAll(".card").forEach(c=>c.style.display=(b.dataset.f==="all"||c.dataset.t===b.dataset.f)?"":"none");
 });
+
+/* Hero video: muted autoplay, pauses when scrolled away, tap to pause, button for sound */
+(function(){
+ const v=document.getElementById("hv"),b=document.getElementById("snd");if(!v||!b)return;
+ const ON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm11 3a4.5 4.5 0 0 0-2.5-4v8A4.5 4.5 0 0 0 14 12zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>',
+  OFF='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.6 3 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>';
+ const rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+ const play=()=>{const p=v.play();if(p&&p.catch)p.catch(()=>{})};
+ const paint=()=>{b.innerHTML=v.muted?OFF:ON;b.setAttribute("aria-pressed",String(!v.muted));b.setAttribute("aria-label",v.muted?"Turn sound on":"Turn sound off")};
+ v.muted=true;paint();
+ if(!rm)play();
+ if("IntersectionObserver" in window&&!rm)new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)play();else v.pause()}),{threshold:.25}).observe(v);
+ v.addEventListener("click",()=>{v.paused?play():v.pause()});
+ b.addEventListener("click",()=>{v.muted=!v.muted;if(!v.muted&&v.paused)play();paint()});
+})();
 
 /* On PC/laptop, show the number instead of opening a calling app. Phones/tablets keep normal tap-to-call. */
 (function(){
