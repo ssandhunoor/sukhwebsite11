@@ -96,6 +96,11 @@ footer{padding:28px 0 96px;background:var(--dark);color:#a9a398;font-size:14px;b
 .hero .wrap{padding-top:28px;padding-bottom:28px}
 .hero .vid{position:relative;justify-self:center;width:min(100%,290px);aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#000;border:3px solid var(--accent);box-shadow:0 30px 40px -12px rgba(0,0,0,.6)}
 .hero .vid video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.vid .pl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:68px;height:68px;border-radius:50%;border:0;background:var(--accent);color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+.vid.paused .pl{display:flex}
+.vid .pl svg{width:34px;height:34px;fill:currentColor;margin-left:3px}
+.vid .pl:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.vid.bad .pl,.vid.bad .snd{display:none}
 .vid .snd{position:absolute;right:10px;bottom:10px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(0,0,0,.62);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .vid .snd:hover{background:var(--accent)}
 .vid .snd:focus-visible{outline:2px solid #fff;outline-offset:2px}
@@ -127,7 +132,7 @@ footer{padding:28px 0 96px;background:var(--dark);color:#a9a398;font-size:14px;b
 <p>Kubota tractors, rice transplanters and combine harvesters, with genuine sales and service in Jagraon and Moga.</p>
 <a class="btn" href="tel:+919876547172">Call Sales</a><a class="btn alt" href="#products">View Machines</a>
 </div>
-<div class="vid"><video id="hv" muted loop playsinline preload="metadata" poster="images/hero-poster.jpg" width="720" height="1280" aria-label="Kubota MU5502 tractor walkaround at Sukh Implement"><source src="videos/hero.mp4" type="video/mp4"></video><button class="snd" id="snd" type="button" aria-label="Turn sound on" aria-pressed="false"></button></div>
+<div class="vid"><video id="hv" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-poster.jpg" width="720" height="1280" aria-label="Kubota MU5502 tractor walkaround at Sukh Implement"><source src="videos/hero.mp4" type="video/mp4"><source src="videos/hero.webm" type="video/webm"></video><button class="pl" id="pl" type="button" aria-label="Play video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button><button class="snd" id="snd" type="button" aria-label="Turn sound on" aria-pressed="false"></button></div>
 </div></div>
 <div class="strip"><div class="wrap"><span>42–55 HP MU Series tractors</span><span>6-row rice transplanters</span><span>Harvesters up to 98.3 HP</span><span>Sales &amp; service</span></div></div>
 
@@ -228,18 +233,26 @@ document.getElementById("tabs").addEventListener("click",e=>{
  grid.querySelectorAll(".card").forEach(c=>c.style.display=(b.dataset.f==="all"||c.dataset.t===b.dataset.f)?"":"none");
 });
 
-/* Hero video: muted autoplay, pauses when scrolled away, tap to pause, button for sound */
+/* Hero video: muted autoplay, pauses when scrolled away, play button if the browser blocks autoplay, button for sound */
 (function(){
- const v=document.getElementById("hv"),b=document.getElementById("snd");if(!v||!b)return;
+ const v=document.getElementById("hv"),b=document.getElementById("snd"),pl=document.getElementById("pl");if(!v||!b||!pl)return;
+ const box=v.parentNode;
  const ON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm11 3a4.5 4.5 0 0 0-2.5-4v8A4.5 4.5 0 0 0 14 12zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>',
   OFF='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.6 3 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>';
  const rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+ let manual=false;
  const play=()=>{const p=v.play();if(p&&p.catch)p.catch(()=>{})};
  const paint=()=>{b.innerHTML=v.muted?OFF:ON;b.setAttribute("aria-pressed",String(!v.muted));b.setAttribute("aria-label",v.muted?"Turn sound on":"Turn sound off")};
- v.muted=true;paint();
+ const state=()=>box.classList.toggle("paused",v.paused);
+ v.muted=true;paint();state();
+ v.addEventListener("play",state);v.addEventListener("pause",state);v.addEventListener("playing",state);
+ const fail=()=>box.classList.add("bad");
+ v.addEventListener("error",fail);
+ const srcs=v.querySelectorAll("source");if(srcs.length)srcs[srcs.length-1].addEventListener("error",fail);
  if(!rm)play();
- if("IntersectionObserver" in window&&!rm)new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)play();else v.pause()}),{threshold:.25}).observe(v);
- v.addEventListener("click",()=>{v.paused?play():v.pause()});
+ if("IntersectionObserver" in window&&!rm)new IntersectionObserver(es=>es.forEach(e=>{if(manual)return;if(e.isIntersecting)play();else v.pause()}),{threshold:.25}).observe(v);
+ pl.addEventListener("click",()=>{manual=false;play()});
+ v.addEventListener("click",()=>{if(v.paused){manual=false;play()}else{manual=true;v.pause()}});
  b.addEventListener("click",()=>{v.muted=!v.muted;if(!v.muted&&v.paused)play();paint()});
 })();
 
